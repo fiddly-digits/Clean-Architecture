@@ -19,7 +19,19 @@ const get = (id) => {
   return koder;
 };
 
-// ! create Koder
-// ! delete Koder
+const create = (data) => {
+  const koder = Koder.create(data);
+  return koder;
+};
 
-module.exports = { list, get };
+const modify = (id, body) => {
+  const koder = Koder.findByIdAndUpdate(id, body, { returnDocument: 'after' });
+  return koder;
+};
+
+const remove = (id) => {
+  const koder = Koder.findByIdAndDelete(id);
+  return koder;
+};
+
+module.exports = { list, get, create, modify, remove };
