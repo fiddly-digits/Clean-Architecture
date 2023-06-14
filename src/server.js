@@ -3,10 +3,12 @@ const app = express();
 
 // ! Routes
 const routerKoder = require('./routes/koder.route.js');
+const routerMentor = require('./routes/mentor.route.js');
 
 app.use(express.json());
 //Middleware de Routers
 app.use('/koders', routerKoder);
+app.use('/mentors', routerMentor);
 
 /**
  * -> Aqui se ponen los middlewares (ejecucion)
