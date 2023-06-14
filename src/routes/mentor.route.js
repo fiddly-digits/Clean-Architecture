@@ -7,7 +7,6 @@ const {
   remove,
   modify
 } = require('../usecases/mentor.usecase.js');
-const mentorModel = require('../models/mentor.model.js');
 
 router.get('/', async (req, res) => {
   try {
@@ -95,15 +94,11 @@ router.delete('/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   const { params, body } = req;
   try {
-    const mentorToModify = await get(params.id);
-    if (body.generations[0].isActive === true) {
-      console.log(body);
-      for (generation in mentorToModify.generations) {
-        mentorToModify.generations[generation].isActive = false;
-        body.generations.unshift(mentorToModify.generations[generation]);
-      }
-    }
     const modifiedMentor = await modify(params.id, body);
+    let responseParams = {
+      success: true,
+      data: modifiedMentor
+    };
 
     if (!modifiedMentor) {
       const error = new Error('The ID was non existant');
@@ -111,10 +106,7 @@ router.patch('/:id', async (req, res) => {
       throw error;
     }
 
-    res.json({
-      success: true,
-      message: modifiedMentor
-    });
+    res.json(responseParams);
   } catch (err) {
     res.status(err.status || 500);
     res.json({
@@ -125,37 +117,3 @@ router.patch('/:id', async (req, res) => {
 });
 
 module.exports = router;
-
-// router.patch('/:id', async (req, res) => {
-//     const { params, body } = req;
-//     try {
-//       const MentorToModify = await get(params.id);
-//       const modifiedMentor = {};
-//       if (body.generations[0].isActive === true) {
-//         MentorToModify.generations.forEach(
-//           (generation) => (generation.isActive = false)
-//         );
-//         MentorToModify.generations.push(body.generations[0]);
-//         modifiedMentor = await modify(params.id, MentorToModify);
-//       } else {
-//         modifiedMentor = await modify(params.id, body);
-//       }
-
-//       if (!modifiedMentor) {
-//         const error = new Error('The ID was non existant');
-//         error.status = 404;
-//         throw error;
-//       }
-
-//       res.json({
-//         success: true,
-//         message: modifiedMentor
-//       });
-//     } catch (err) {
-//       res.status(err.status || 500);
-//       res.json({
-//         success: false,
-//         message: err.message
-//       });
-//     }
-//   });

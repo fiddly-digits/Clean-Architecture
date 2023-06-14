@@ -20,7 +20,21 @@ const remove = (id) => {
   return mentor;
 };
 
-const modify = (id, body) => {
+const modify = async (id, body) => {
+  const mentorToModify = await Mentor.findById(id);
+
+  if (body?.generations) {
+    if (body.generations[0].isActive === true) {
+      for (generation in mentorToModify.generations) {
+        mentorToModify.generations[generation].isActive = false;
+        body.generations.unshift(mentorToModify.generations[generation]);
+      }
+    } else {
+      for (generation in mentorToModify.generations) {
+        body.generations.unshift(mentorToModify.generations[generation]);
+      }
+    }
+  }
   const mentor = Mentor.findByIdAndUpdate(id, body, {
     returnDocument: 'after'
   });
