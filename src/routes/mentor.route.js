@@ -100,11 +100,16 @@ router.patch('/:id', async (req, res) => {
       console.log(body);
       for (generation in mentorToModify.generations) {
         mentorToModify.generations[generation].isActive = false;
-        body.generations.push(mentorToModify.generations[generation]);
+        body.generations.unshift(mentorToModify.generations[generation]);
       }
     }
-
     const modifiedMentor = await modify(params.id, body);
+
+    if (!modifiedMentor) {
+      const error = new Error('The ID was non existant');
+      error.status = 404;
+      throw error;
+    }
 
     res.json({
       success: true,
